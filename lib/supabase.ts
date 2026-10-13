@@ -1,6 +1,10 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createBrowserClient as createSupabaseBrowserClient, createServerClient as createSupabaseServerClient } from "@supabase/ssr";
+import {
+  createBrowserClient as createSupabaseBrowserClient,
+  createServerClient as createSupabaseServerClient,
+  type CookieOptions
+} from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -32,7 +36,7 @@ export function createServerClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
               cookieStore.set(name, value, options);
