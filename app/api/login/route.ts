@@ -26,7 +26,12 @@ export async function POST(request: Request) {
   }
 
   const supabase = createServerClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
+  const requestOrigin = new URL(request.url).origin;
+  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const siteUrl =
+    configuredSiteUrl?.includes("localhost") && !requestOrigin.includes("localhost")
+      ? requestOrigin
+      : configuredSiteUrl ?? requestOrigin;
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
